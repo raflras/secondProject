@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -36,7 +37,7 @@ public class ArticleController {
         // 2. Repository에게 Entity를 DB 안에 저장하게 함!
         Article saved = articleRepository.save(article);
         log.info(saved.toString());
-        return "작동!";
+        return "redirect:/articles/"+saved.getId();
     }
     @GetMapping("/articles/{id}")
     public String show(@PathVariable Long id, Model model){
@@ -44,7 +45,6 @@ public class ArticleController {
 
         // 1 : id로 데이터를 가져옴!
         Article articleEntity = articleRepository.findById(id).orElse(null);
-
         // 2 : 가져온 데이터를 모델에 등록!
         model.addAttribute("article", articleEntity);
 
@@ -61,5 +61,18 @@ public class ArticleController {
         model.addAttribute("articleList", articleEntityList);
         //3: 뷰 페이지를 설정!
         return "articles/index";
+    }
+
+    @GetMapping("/articles/{id}/edit")
+    public String edit(@PathVariable Long id, Model model){
+        // 수정할 데이터를 가져오기!
+        Article articleEntity = articleRepository.findById(id).orElse(null);
+
+        // 모델에 데이터를 등록
+        model.addAttribute("article", articleEntity);
+
+        // 뷰 페이지 설정
+        return "articles/edit";
+
     }
 }

@@ -10,8 +10,8 @@
     </thead>
     {{#articleList}}
         <tr>
-            <th {{id}}</th>
-            <td>{{title}}</td>
+            <th>{{id}}</th>
+            <td><a href="/articles/{{id}}">{{title}}</td>
             <td>{{content}}</td>
 
         </tr>
@@ -19,5 +19,7 @@
 
     </tbody>
 </table>
+
+<a href="articles/new">New Article</a>
 
 {{>layouts/footer}}
