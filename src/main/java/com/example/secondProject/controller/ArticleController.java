@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,15 +29,15 @@ public class ArticleController {
 
     @PostMapping("/articles/create")
     public String createArticle(ArticleForm form){
-        log.info(form.toString());
+       // log.info(form.toString());
 
         // 1. Dto를 변환! entity!
         Article article = form.toEntity();
-        log.info(article.toString());
+        //log.info(article.toString());
 
         // 2. Repository에게 Entity를 DB 안에 저장하게 함!
         Article saved = articleRepository.save(article);
-        log.info(saved.toString());
+       // log.info(saved.toString());
         return "redirect:/articles/"+saved.getId();
     }
     @GetMapping("/articles/{id}")
@@ -73,6 +74,32 @@ public class ArticleController {
 
         // 뷰 페이지 설정
         return "articles/edit";
+    }
+    @PostMapping("/articles/update")
+    public String update(ArticleForm form){
+        log.info(form.toString());
 
+        // 1 : DTO를 엔티티로 변환한다!
+        Article articleEntity = form.toEntity();
+        log.info(articleEntity.toString());
+
+        // 2 :  엔티티를 DB로 저장한다!
+        // 2-1 : DB에서 기존 데이터를 가져온다!
+        Article target = articleRepository.findById(articleEntity.getId()).orElse(null);
+        // 2-2 : 기존 데이터가 있다면! 값을 갱신한다!
+        if(target!=null){
+            articleRepository.save(articleEntity); // 엔티티가 DB로 갱신!
+        }
+        // 3: 수정 결과 페이지로 리다이렉트 한다!
+        return "redirect:/articles/"+articleEntity.getId();
+    }
+
+    @DeleteMapping("{id}")
+    public String delete(@PathVariable Long id){
+        // DB에서 삭제할 기존 데이터를 가져온다.
+        // 삭-제
+        // 삭제 결과 페이지 리다이렉트
+
+        return "";
     }
 }
